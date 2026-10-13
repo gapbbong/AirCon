@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html ng-app="acmanagerApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <!-- <base href="/"> -->
+    <!--<title>AC Manager 5</title>-->
+
+    <link rel="shortcut icon" href="#">
+
+    <!-- inject:css -->
+    <link rel="stylesheet" href="css/application.css">
+    <link rel="stylesheet" href="css/page.css">
+    <link rel="stylesheet" href="css/page_dashboard.css">
+    <link rel="stylesheet" href="css/page_facility.css">
+    <link rel="stylesheet" href="css/part.css">
+    <link rel="stylesheet" href="css/ui-calendar.css">
+    <link rel="stylesheet" href="css/ui-dropdowntree.css">
+    <link rel="stylesheet" href="css/ui-gomap.css">
+    <link rel="stylesheet" href="css/ui-timetable.css">
+    <link rel="stylesheet" href="css/ui.css">
+    <link rel="stylesheet" href="css/virtual-keyboard.css">
+    <link rel="stylesheet" href="css/signage/signage.css">
+    <!-- endinject -->
+
+    <!-- bower:css -->
+    <link rel="stylesheet" href="lib/angular-ui-tree/dist/angular-ui-tree.min.css">
+    <link rel="stylesheet" href="lib/angularjs-slider/dist/rzslider.css">
+    <!-- endinject -->
+
+    <link rel="stylesheet" href="kendo/kendo.common.min.css">
+    <link rel="stylesheet" href="kendo/kendo.rtl.min.css">
+    <link rel="stylesheet" href="kendo/kendo.default.min.css">
+    <link rel="stylesheet" href="kendo/kendo.default.mobile.min.css">
+
+
+</head>
+
+<body onresize="resizeBrowser()">
+<script type="text/javascript">
+    function resizeBrowser()
+    {
+        if(location.host != "127.0.0.1:8000" && window.innerWidth == 1024) {
+            viewport = document.querySelector("meta[name=viewport]");
+            viewport.setAttribute('content', 'width=1023px, initial-scale=1.0005, maximum-scale=1.1, user-scalable=yes');
+        }
+    }
+
+    function detectBrowser()
+    {
+        // If we already tested, do not test again
+        if ( browserInfo )
+        {
+            return browserInfo;
+        }
+
+        var browserData = [
+            {
+                string       : window.navigator.userAgent,
+                subString    : 'Edge',
+                versionSearch: 'Edge',
+                identity     : 'Edge'
+            },
+            {
+                string   : window.navigator.userAgent,
+                subString: 'Chrome',
+                identity : 'Chrome'
+            },
+            {
+                string       : window.navigator.userAgent,
+                subString    : 'OmniWeb',
+                versionSearch: 'OmniWeb/',
+                identity     : 'OmniWeb'
+            },
+            {
+                string       : window.navigator.vendor,
+                subString    : 'Apple',
+                versionSearch: 'Version',
+                identity     : 'Safari'
+            },
+            {
+                prop    : window.opera,
+                identity: 'Opera'
+            },
+            {
+                string   : window.navigator.vendor,
+                subString: 'iCab',
+                identity : 'iCab'
+            },
+            {
+                string   : window.navigator.vendor,
+                subString: 'KDE',
+                identity : 'Konqueror'
+            },
+            {
+                string   : window.navigator.userAgent,
+                subString: 'Firefox',
+                identity : 'Firefox'
+            },
+            {
+                string   : window.navigator.vendor,
+                subString: 'Camino',
+                identity : 'Camino'
+            },
+            {
+                string   : window.navigator.userAgent,
+                subString: 'Netscape',
+                identity : 'Netscape'
+            },
+            {
+                string       : window.navigator.userAgent,
+                subString    : 'MSIE',
+                identity     : 'Explorer',
+                versionSearch: 'MSIE'
+            },
+            {
+                string       : window.navigator.userAgent,
+                subString    : 'Trident/7',
+                identity     : 'Explorer',
+                versionSearch: 'rv'
+            },
+            {
+                string       : window.navigator.userAgent,
+                subString    : 'Gecko',
+                identity     : 'Mozilla',
+                versionSearch: 'rv'
+            },
+            {
+                string       : window.navigator.userAgent,
+                subString    : 'Mozilla',
+                identity     : 'Netscape',
+                versionSearch: 'Mozilla'
+            }
+        ];
+
+        var osData = [
+            {
+                string   : window.navigator.platform,
+                subString: 'Win',
+                identity : 'Windows'
+            },
+            {
+                string   : window.navigator.platform,
+                subString: 'Mac',
+                identity : 'Mac'
+            },
+            {
+                string   : window.navigator.platform,
+                subString: 'Linux',
+                identity : 'Linux'
+            },
+            {
+                string   : window.navigator.platform,
+                subString: 'iPhone',
+                identity : 'iPhone'
+            },
+            {
+                string   : window.navigator.platform,
+                subString: 'iPod',
+                identity : 'iPod'
+            },
+            {
+                string   : window.navigator.platform,
+                subString: 'iPad',
+                identity : 'iPad'
+            },
+            {
+                string   : window.navigator.platform,
+                subString: 'Android',
+                identity : 'Android'
+            }
+        ];
+
+        var versionSearchString = '';
+
+        function searchString(data)
+        {
+            for ( var i = 0; i < data.length; i++ )
+            {
+                var dataString = data[i].string;
+                var dataProp = data[i].prop;
+
+                versionSearchString = data[i].versionSearch || data[i].identity;
+
+                if ( dataString )
+                {
+                    if ( dataString.indexOf(data[i].subString) !== -1 )
+                    {
+                        return data[i].identity;
+
+                    }
+                }
+                else if ( dataProp )
+                {
+                    return data[i].identity;
+                }
+            }
+        }
+
+        function searchVersion(dataString)
+        {
+            var index = dataString.indexOf(versionSearchString);
+
+            if ( index === -1 )
+            {
+                return;
+            }
+
+            return parseInt(dataString.substring(index + versionSearchString.length + 1));
+        }
+
+        var browser = searchString(browserData) || 'unknown-browser';
+        var version = searchVersion(window.navigator.userAgent) || searchVersion(window.navigator.appVersion) || 'unknown-version';
+        var os = searchString(osData) || 'unknown-os';
+
+        // Prepare and store the object
+        browser = browser.toLowerCase();
+        version = browser + '-' + version;
+        os = os.toLowerCase();
+
+        var browserInfo = {
+            browser: browser,
+            version: version,
+            os     : os
+        };
+
+        return browserInfo;
+    }
+
+    var browserInfo = detectBrowser();
+    if ( browserInfo )
+    {
+        var htmlClass = browserInfo.browser + ' ' + browserInfo.version + ' ' + browserInfo.os;
+//            console.log(htmlClass);
+        if(browserInfo.version == "explorer-7"
+            || browserInfo.version == "explorer-8"
+            || browserInfo.version == "explorer-9"
+            || browserInfo.version == "explorer-10"
+        ) {
+            // not support
+            window.location.replace('/src/public/login.html');
+        }
+    }
+
+</script>
+
+
+
+<div id="master-view" ui-view></div>
+
+<li ng-include="'/src/login/preload_image.html'" style="display:none"></li>
+
+<!-- bower:js -->
+<script src="lib/jquery/dist/jquery.js"></script>
+<script src="lib/angular/angular.js"></script>
+<script src="lib/moment/min/moment-with-locales.js"></script>
+<script src="lib/angular-slider/slider.js"></script>
+<script src="lib/angular-translate/angular-translate.js"></script>
+<script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+<script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="lib/angular-ui-tree/dist/angular-ui-tree.js"></script>
+<script src="lib/angularjs-slider/dist/rzslider.js"></script>
+<script src="lib/x2js/xml2json.min.js"></script>
+<script src="lib/d3/d3.js"></script>
+<script src="lib/device.js/lib/device.js"></script>
+<script src="lib/lodash/lodash.js"></script>
+<script src="lib/angular-sanitize/angular-sanitize.js"></script>
+<script src="lib/ng-file-upload/ng-file-upload.js"></script>
+<script src="lib/angular-resource/angular-resource.js"></script>
+<script src="lib/angular-cookies/angular-cookies.js"></script>
+<script src="lib/ndkit/dist/nd.js"></script>
+<script src="lib/ndkit/dist/nd.webkit.js"></script>
+<script src="lib/angular-local-storage/dist/angular-local-storage.js"></script>
+<script src="lib/crypto-js/crypto-js.js"></script>
+<script src="lib/angular-useragent-parser/release/angular-useragent-parser.js"></script>
+<script src="lib/hangul-js/hangul.js"></script>
+<script src="lib/howler/dist/howler.js"></script>
+<script src="lib/file-saver/FileSaver.js"></script>
+<script src="lib/jssor-slider/js/jssor.slider.min.js"></script>
+<script src="lib/angular-moment/angular-moment.js"></script>
+<script src="lib/angular-ui-router.statehelper/statehelper.js"></script>
+<script src="lib/angular-xml/angular-xml.js"></script>
+<!-- endinject -->
+
+<!-- inject:js -->
+<script src="src/angular-config.js"></script>
+<script src="src/app.js"></script>
+<script src="src/route.js"></script>
+<script src="src/utility.js"></script>
+<script src="src/common/acm.validation.directive.js"></script>
+<script src="src/common/d3-component.directive.js"></script>
+<script src="src/common/ui-link.directive.js"></script>
+<script src="src/common/ui-responder.js"></script>
+<script src="src/common/ui-service.js"></script>
+<script src="src/control/continuous.controller.js"></script>
+<script src="src/control/facility.controller.js"></script>
+<script src="src/control/hotelsolution.controller.js"></script>
+<script src="src/control/interlock.controller.js"></script>
+<script src="src/control/schedule.controller.js"></script>
+<script src="src/dashboard/dashboard.controller.js"></script>
+<script src="src/dashboard/dashobard.directive.js"></script>
+<script src="src/energy/energyprice.controller.js"></script>
+<script src="src/energy/navigation.controller.js"></script>
+<script src="src/energy/peakdemand.controller.js"></script>
+<script src="src/energy/usage.controller.js"></script>
+<script src="src/fct/alltest.controller.js"></script>
+<script src="src/fct/eachtest.controller.js"></script>
+<script src="src/fct/fct.controller.js"></script>
+<script src="src/history/cycle.controller.js"></script>
+<script src="src/history/cycle.filter.js"></script>
+<script src="src/history/navigation.controller.js"></script>
+<script src="src/history/trend.controller.js"></script>
+<script src="src/history/work.controller.js"></script>
+<script src="src/keyboard/virtual-keyboard.js"></script>
+<script src="src/login/login.controller.js"></script>
+<script src="src/main/main.controller.js"></script>
+<script src="src/master/master-layout.controller.js"></script>
+<script src="src/master/master-menu.controller.js"></script>
+<script src="src/preference/adduser.controller.js"></script>
+<script src="src/preference/admin.controller.js"></script>
+<script src="src/preference/bacnet.controller.js"></script>
+<script src="src/preference/device.controller.js"></script>
+<script src="src/preference/error.controller.js"></script>
+<script src="src/preference/group.controller.js"></script>
+<script src="src/preference/highquality.controller.js"></script>
+<script src="src/preference/network.controller.js"></script>
+<script src="src/preference/screen.controller.js"></script>
+<script src="src/preference/signage.controller.js"></script>
+<script src="src/preference/system.controller.js"></script>
+<script src="src/preference/tms.controller.js"></script>
+<script src="src/signage/signage-facility.controller.js"></script>
+<script src="src/signage/signage-group.controller.js"></script>
+<script src="src/signage/signage-list.controller.js"></script>
+<script src="src/signage/signage.controller.js"></script>
+<script src="src/services/alarm.service.js"></script>
+<script src="src/services/auth.service.js"></script>
+<script src="src/services/check.service.js"></script>
+<script src="src/services/chiller.services.js"></script>
+<script src="src/services/continuous.service.js"></script>
+<script src="src/services/control.history.service.js"></script>
+<script src="src/services/cp.service.js"></script>
+<script src="src/services/cpinfo.service.js"></script>
+<script src="src/services/cptype.service.js"></script>
+<script src="src/services/dashboard.service.js"></script>
+<script src="src/services/dataprovider.service.js"></script>
+<script src="src/services/device.service.js"></script>
+<script src="src/services/energynavigation.service.js"></script>
+<script src="src/services/energyprice.service.js"></script>
+<script src="src/services/energyusage.service.js"></script>
+<script src="src/services/excel.service.js"></script>
+<script src="src/services/facility-list.service.js"></script>
+<script src="src/services/facility.service.js"></script>
+<script src="src/services/fct.service.js"></script>
+<script src="src/services/hotelsolution.service.js"></script>
+<script src="src/services/interlock.service.js"></script>
+<script src="src/services/localStorage.service.js"></script>
+<script src="src/services/notification.service.js"></script>
+<script src="src/services/peakdemand.service.js"></script>
+<script src="src/services/schedule.service.js"></script>
+<script src="src/services/session.service.js"></script>
+<script src="src/services/setting.service.js"></script>
+<script src="src/services/signage.service.js"></script>
+<script src="src/services/space.service.js"></script>
+<script src="src/services/system.service.js"></script>
+<script src="src/services/temperature.service.js"></script>
+<script src="src/services/trend.service.js"></script>
+<script src="src/services/user.service.js"></script>
+<script src="src/services/valuetype.service.js"></script>
+<script src="src/services/wapi.service.js"></script>
+<script src="src/services/work.service.js"></script>
+<script src="src/services/xmlapi.service.js"></script>
+<script src="src/util/FileSaver.js"></script>
+<script src="src/util/data_util.js"></script>
+<script src="src/util/list-to-tree.js"></script>
+<script src="src/util/ng_util.js"></script>
+<script src="src/common/cp-control-groups/cp-control-groups.directive.js"></script>
+<script src="src/common/devel/devel.controller.js"></script>
+<script src="src/common/devel/guide.controller.js"></script>
+<script src="src/common/operation-desc/operation-desc.directive.js"></script>
+<script src="src/common/ui-component/ui-component.directive.js"></script>
+<script src="src/common/ui-component/ui-dropdowntree.directive.js"></script>
+<script src="src/common/ui-component/ui-gomap.directive.js"></script>
+<script src="src/common/ui-component/ui-slideshow.directive.js"></script>
+<script src="src/common/ui-component/ui-timetable.directive.js"></script>
+<script src="src/dashboard/dialog/widget-dialog.controller.js"></script>
+<script src="src/common/ui-component/calendar/calendar.directive.js"></script>
+<script src="src/common/ui-component/calendar/datepicker.directive.js"></script>
+<!-- endinject -->
+
+<script src="kendo/jszip.min.js"></script>
+<script src="kendo/kendo.all.min.js"></script>
+</body>
+
+</html>
