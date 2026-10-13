@@ -1,0 +1,154 @@
+<style>
+	#master-view {
+		color:#383838;
+	}
+</style>
+<section id="master-view" prevent-right-click>
+	<div ng-include="'/src/master/head-title.html'"></div>
+	<main class="page-public-login">
+		<div class="target-1" style="width:100px; height:100px; left:0px; top:0px; position:absolute;"></div>
+		<div class="target-2" style="width:100px; height:100px; left:924px; top:0px; position:absolute;"></div>
+		<div class="target-3" style="width:100px; height:100px; left:0px; top:500px; position:absolute;"></div>
+		<div class="target-4" style="width:100px; height:100px; left:924px; top:500px; position:absolute;"></div>
+				
+		<form class="login-form" ng-if="need_to_set_admin == false" name="form" ng-submit="login()" novalidate>
+			<div class="brand" ng-if="managerProduct_type == 'ACS_5'"><span class="bold">AC</span> Smart 5</div>
+			<div class="brand" ng-if="managerProduct_type == 'ACP_5'"><span class="bold">ACP</span> 5</div>
+			<div class="brand" ng-if="managerProduct_type == 'BACnet_5'"><span class="bold">ACP</span> BACnet 5</div>
+			<div class="brand" ng-if="managerProduct_type == 'LON_5'"><span class="bold">ACP</span> Lonworks 5</div>
+			<div class="brand" ng-if="managerProduct_type == 'ACSBACnet_5'"><span class="bold">AC</span> Smart BACnet 5</div>
+			<div class="brand" ng-if="managerProduct_type == 'ACM_5'"><span class="bold">AC</span> Manager 5</div>
+			<group class="textfield-group id-group">
+				<label>{{::'ID' | translate}}</label>
+				<input type="text" ng-class="{noSelection: isSmartLCD}" placeholder="{{:: 'ID' | translate }}" name="username" ng-model="::user.username" required autofocus kr-input ng-virtual-keyboard="{enterSubmit:login , kt:'en'}" ng-readonly="isSmartLCD == true"></input>
+			</group>
+			<group class="textfield-group password-group">
+				<label>{{::'PASSWORD' | translate}}</label>
+				<input type="password" ng-class="{noSelection: isSmartLCD}" placeholder="{{:: 'PASSWORD' | translate }}" name="password" ng-model="::user.password" required kr-input ng-virtual-keyboard="{enterSubmit:login, kt:'pw'}" ng-readonly="isSmartLCD == true"></input>
+			</group>
+			<group>
+				<div class="has-error">
+					<p ng-show="error == 'none'">
+						{{::'LOGIN.ERROR.LOGIN' | translate}}
+					</p>
+					<p ng-show="error == 'info'">
+						{{::'LOGIN.ERROR.ID' | translate}}
+					</p>
+					<p ng-show="error == 'wait'">
+						{{::'LOGIN.ERROR.WAIT' | translate}}
+					</p>
+					<p ng-show="error == 'duplicate'">
+						{{::'ADDITION.HTML.306' | translate}}
+					</p>
+					<p ng-show="error == 'over'">
+						{{::'ADDITION.HTML.308' | translate}}
+					</p>
+				</div>
+			</group>
+			<checkbox bind-title="::'SIGNAGE.LOGIN.AUTO_LOGIN'|translate" class="auto_login" ng-if="isSmartLCD !== true" ng-model="isAutoLogin" ng-click="autoLoginToggle()"></checkbox>
+			<input type="submit" class="submit-action" value="{{::'LOGIN' | translate}}" login-click="" ng-disabled="isLoginDisable" ></input>
+			<input type="submit"  class="submit-action" value="{{::'SIGNAGE.LIST.MONITORING.TITLE' | translate}}" ng-if="signage_enable == true" ng-click="signageList()" ng-disabled="isSignageDisable"></input>
+			<p media-not="mobile" ng-if="isSmartLCD != true" style="padding-top: 10px">{{::'VERSION3.MSG.OPTIMIZE.CHROME' | translate}}</p>
+		</form>
+
+				
+		<form class="login-form" name="form" ng-if="need_to_set_admin == true" ng-submit="setAdmin()" novalidate>
+			<div class="brand"><span class="bold">{{:: 'ADDITION.HTML.291' | translate }}</span></div>
+			<group class="textfield-group password-group">
+				<label>{{::'PASSWORD' | translate}}</label>
+				<input type="password" ng-class="{noSelection: isSmartLCD}" placeholder="{{:: 'PASSWORD' | translate }}" name="password" ng-model="::newUser.password" required autofocus kr-input ng-virtual-keyboard="{enterSubmit:login , kt:'pw'}" ng-readonly="isSmartLCD == true"></input>
+			</group>
+			<group class="textfield-group password-group">
+				<label>{{::'ADDITION.HTML.290' | translate}}</label>
+				<input type="password" ng-class="{noSelection: isSmartLCD}" placeholder="{{:: 'ADDITION.HTML.290' | translate }}" name="password" ng-model="::newUser.verify_password" required kr-input ng-virtual-keyboard="{enterSubmit:login, kt:'pw'}" ng-readonly="isSmartLCD == true"></input>
+			</group>
+			<group>
+				<div class="has-error">
+					<p ng-show="error == 'none'">
+						{{::'LOGIN.ERROR.LOGIN' | translate}}
+					</p>
+					<p ng-show="error == 'notsame'">
+						{{::'ADDITION.HTML.292' | translate}}
+					</p>
+					<p ng-show="error == 'rule'">
+						{{::'ADDITION.HTML.293' | translate}}
+					</p>
+					<p ng-show="error == 'nodata'">
+						{{::'ADDITION.HTML.294' | translate}}
+					</p>
+				</div>
+			</group>
+			<input type="submit" class="submit-action" value="{{::'ADDITION.HTML.289' | translate}}" ng-disabled="isCreateDisable" ></input>
+			<p media-not="mobile" ng-if="isSmartLCD != true" style="padding-top: 10px">{{::'VERSION3.MSG.OPTIMIZE.CHROME' | translate}}</p>
+		</form>
+
+		
+		<modal id="admin-create-success-modal" class="overlay-modal" prevent-right-click>
+			<dialog>
+				<header>
+					<b class="dialog-title">{{::"ADDITION.HTML.291"|translate}}</b>
+				</header>
+				<content>
+					<p class="dialog-text">
+						{{::"ADDITION.HTML.295"|translate}}<br>
+					</p>
+				</content>
+				<footer>
+					<controls class="dialog-commands">
+						<button class="dialog-close-action" ng-click='createSuccess()'>{{::"DUPLICATE.44"|translate}}</button>
+					</controls>
+				</footer>
+			</dialog>
+		</modal>
+		<modal id="stupid-modal" ng-if="isSmartLCD == true" prevent-right-click>
+			<dialog>
+				<header>
+					<b class="dialog-title">{{::"DIALOG.NOTICE" | translate }}</b>
+					<a class="dialog-close-action"></a>
+				</header>
+				<content>
+					<p class="dialog-text">
+						{{::"LOGIN.STUPID.DIALOG.MSG"|translate}}
+					</p>
+				</content>
+				<footer>
+					<controls class="dialog-commands">
+						<button class="dialog-close-action">{{::"COMMON.NO" | translate }}</button>
+						<button class="dialog-close-action" ng-click="stupid()">{{::"COMMON.YES" | translate }}</button>
+					</controls>
+				</footer>
+			</dialog>
+		</modal>
+
+		<modal id="alarm-modal" class="overlay-modal" prevent-right-click>
+			<dialog>
+				<header>
+					<b class="dialog-title" style="color: red;">{{::'DUPLICATE.267'|translate}}</b>
+				</header>
+				<content>
+					<p class="dialog-text">
+						{{::"ADDITION.JS.33"|translate}}<br>
+					</p>
+				</content>
+				<footer>
+					<controls class="dialog-commands">
+						<button class="dialog-close-action" ng-click='doneAlarm()'>{{::"DUPLICATE.44"|translate}}</button>
+					</controls>
+				</footer>
+			</dialog>
+		</modal>
+		<a style="text-decoration: underline" ng-click="clickHelp()">{{::'DUPLICATE.169' | translate}}</a>
+		<a style="transform: translate(0%, 120%)" media-not="mobile" ng-if="isSmartLCD !== true" href="/files/ChromeStandaloneSetup.exe" download>{{::'LOGIN.CHROME' | translate}}</a>
+	</main>
+</section>
+
+<modal id="manual-modal" style="left: 0px; top: 0px; right: 0px;" prevent-right-click>
+	<dialog style="margin: 0px; padding: 10px; width: 100%; max-width: 100%; height: 100%; padding: 0px; overflow: hidden;">
+		<header style="z-index: 10000; width: 50px; top: -2px; left: 960px;">
+			<a class="dialog-close-action" ng-click="closeHelp()"></a>
+		</header>
+		<content style="top: -70px; margin: 0px;; padding: 0px; height: 600px;">
+			<object id="manual-object" type="text/html" data="{{helpUrl}}" style="width: 1024px; height: 600px;" prevent-right-click></object>
+		</content>
+	</dialog>
+</modal>
